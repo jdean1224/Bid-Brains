@@ -1,0 +1,24 @@
+ .bid-table {
+	height: 500px;
+	width: 400px;
+	border: 0.5px solid black;
+	display: flex;
+	gap: 20px;
+	flex-direction: column;
+	padding: 20px 0px;
+	background-color: rgb(222, 222, 222);
+	box-shadow: 0px 0px 7px 0px black;
+ }
+ 
+ .bid-text {
+	font-family: sans-serif;
+	font-size: 1rem;
+ }
+
+ .bid-data-item {
+	height: fit-content;
+	background-color: rgb(17, 255, 104);
+	padding: 10px 0px 10px 20px;
+	width: 100%;
+	box-shadow: 0px 0px 7px 0px black;
+ }
