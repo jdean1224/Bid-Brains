@@ -14,7 +14,7 @@ function CreateAuctionForm() {
   const [selectedFiles, setSelectedFiles] = useState([])
     
   const onSubmit = async (formData) => {
-  const { itemDescription, bid, condition, quantity, dispatch, brand, color, size, bidLength, sellersDescription, returns } = formData;
+  const { itemDescription, bid, highestBid, condition, quantity, dispatch, brand, color, size, bidStart, bidLength, sellersDescription, returns } = formData;
   if (!itemDescription) {
     alert('Please enter item description.');
     return;
@@ -27,12 +27,14 @@ function CreateAuctionForm() {
       alert('Please upload at least one image of the item.');
       return;
   }
-  try {
+    try {
+      const bidStart = new Date().getTime()
     
     // Create FormData instance
     const formDataToSend = new FormData();
     formDataToSend.append('itemDescription', itemDescription);
     formDataToSend.append('bid', bid);
+    formDataToSend.append('highestBid', bid)
     formDataToSend.append('userId', userId)
     formDataToSend.append('condition', condition)
     formDataToSend.append('quantity', quantity)
@@ -40,6 +42,7 @@ function CreateAuctionForm() {
     formDataToSend.append('brand', brand)
     formDataToSend.append('color', color)
     formDataToSend.append('size', size),
+    formDataToSend.append('bidStart', bidStart)
     formDataToSend.append('bidLength', bidLength),
     formDataToSend.append('sellersDescription', sellersDescription)
     formDataToSend.append('returns', returns)
@@ -85,7 +88,7 @@ function CreateAuctionForm() {
 
          <div className={styles['form-item']}>
           <label className={styles.label}>Quantity</label>
-          <input className={styles.input} id='quantity' type='text' {...register('quntity')} />
+          <input className={styles.input} id='quantity' type='text' {...register('quantity')} />
         </div>
 
         <div className={styles['form-item']}>
@@ -109,8 +112,11 @@ function CreateAuctionForm() {
         </div>
 
         <div className={styles['form-item']}>
-          <label className={styles.label}>bidLength</label>
-          <input className={styles.input} id='bidLength' type='text' {...register('bidLength')} />
+          <label className={styles.label} htmlFor='bidLength'>Bid Length:</label>
+          <select className={styles.select} id='bidLength' {...register('bidLength')}>
+            <option value='24'>1 day</option>
+            <option value='48'>2 days</option>
+          </select>
         </div>
 
         <div className={styles['form-item']}>

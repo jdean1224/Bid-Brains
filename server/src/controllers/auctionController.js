@@ -26,12 +26,15 @@ export const handleImageUpload = (req, res, next) => {
 
 export const createAuction = async (req, res) => {
     try {
-        const { itemDescription, bid, userId, condition, quantity, dispatch, brand, color, size, bidLength, sellersDescription, returns } = req.body;
+        const { itemDescription, bid, highestBid, userId, condition, quantity, dispatch, brand, color, size, bidStart, bidLength, sellersDescription, returns } = req.body;
         const images = req.files || [];
-
+        console.log(req.body)
+        const bidStartTime = new Date(parseInt(bidStart))
+        console.log('bidStart:', bidStartTime)
         const auction = await Auction.create({
             itemDescription,
             bid,
+            highestBid,
             userId,
             condition,
             quantity,
@@ -39,6 +42,7 @@ export const createAuction = async (req, res) => {
             brand,
             color,
             size,
+            bidStart: bidStartTime,
             bidLength,
             sellersDescription,
             returns
@@ -89,5 +93,29 @@ export const getAuctionById = async (req, res) => {
     } catch (error) {
         console.error('Error fetching auction by ID:', error.message)
         res.status(500).json({ message: 'Internal server error'})
+    }
+}
+
+export const updateHighestBid = async (req, res) => {
+    try {
+        console.log('req.body:', req.body)
+        const { auctionId } = req.params
+        console.log('id is !!!!:', auctionId)
+        const { highestBid } = req.body
+        const auction = await Auction.findByPk(auctionId)
+
+        if (!auction) {
+            return res.status(404).json({message: 'Auction not found'})
+        }
+
+        auction.highestBid = highestBid
+        await auction.save({fields: ['highestBid']})
+
+        res.status(200).json({ message: 'Auction highest bid updated successfully', auction })
+        console.log('highestBid Updated!!!!!!!!')
+    } catch (error) {
+        console.log('Error updating highest bid!!!!!!!')
+        console.error('Error updating auction highest bid', error.message)
+        res.status(500).json({ message : 'Internal server error'})
     }
 }

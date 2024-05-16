@@ -2,12 +2,12 @@ import { useParams } from 'react-router-dom';
 import styles from '../styles/AuctionItem.module.css';
 import global from '../styles/GlobalStyles.module.css';
 import { useGetAuctionById } from '../hooks/useAuction';
-import { usePlaceBid } from '../hooks/useBid'
+import { usePlaceBid, useUpdateHighestBid } from '../hooks/useBid'
 import { useFetchUserById } from '../hooks/useUsers';
 import { useForm } from 'react-hook-form'
 import BidTable from '../features/auction/BidTable'
 import { useUserContext } from '../contexts/UserProvider';
-import { useAuctionContext } from '../contexts/AuctionProvider'
+import BidTimer from '../features/auction/BidTimer';
   
 function AuctionItemPage() {
   const { auctionId } = useParams(); 
@@ -16,17 +16,14 @@ function AuctionItemPage() {
   const { userId } = userState
   
   const { data: auction, isLoading: auctionLoading, error: auctionError } = useGetAuctionById(auctionId);
+  console.log('auction:', auction)
 
   const userQuery = useFetchUserById(auction?.userId || null);
   const user = userQuery.data
 
   const { placeBid, isLoading } = usePlaceBid()
+  const { updateHighestBid } = useUpdateHighestBid(auctionId)
 
-  // const [highestBid, setHighestBid] = useState(auction?.bid)
-
-  const { auctionState, auctionDispatch } = useAuctionContext()
-  const { highestBid } = auctionState
-  
   const onSubmit = async () => {
     const amount = getValues('amount')
 
@@ -35,13 +32,15 @@ function AuctionItemPage() {
       return
     }
 
-    if (parseFloat(amount) <= parseFloat(auction.bid) || parseFloat(amount) <= parseFloat(highestBid)) {
+    if (parseFloat(amount) <= parseFloat(auction.highestBid)) {
       alert('Bid amount must be at least one dollar more than the current highest bid.')
       return
     }
     try {
       placeBid({ auctionId, userId, amount: parseFloat(amount) })
-      auctionDispatch({type: 'HANDLE_HIGHEST_BID', payload: amount})
+      console.log('1) Highest bid before update:', parseFloat(auction.highestBid));
+
+      updateHighestBid({auctionId, highestBid: parseFloat(amount)})
       reset()
     } catch (error) {
       console.error('Error placing bid:', error.message)
@@ -81,12 +80,14 @@ function AuctionItemPage() {
               <p>Returns: { auction.returns}</p>
               <h3>Auction ID: {auctionId}</h3>
               <p className={styles['starting-bid']}>{`Starting Bid: ${auction.bid}`}</p>
+              <p className={styles['starting-bid']}>Current Highest Bid: {auction.bid === auction.highestBid ? 'No bids have been placed' : auction.highestBid}</p>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <input className={styles.input} type="text" placeholder='Enter Bid Amount' id='amount' {...register('amount')} />
                 <button type='submit' className={styles['place-bid-btn']}>Place Bid</button>
-             </form>
+              </form>
+              <BidTimer bidLength={auction.bidLength} bidStart={ auction.bidStart} />
           </div>
-                   
+                    
         </>
         )}  
         <BidTable auctionId={auctionId} userId={ userId} />

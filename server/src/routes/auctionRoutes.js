@@ -1,5 +1,5 @@
 import express from 'express'
-import {handleImageUpload, getAllAuctions, getAuctionById, createAuction } from '../controllers/auctionController.js'
+import {handleImageUpload, getAllAuctions, getAuctionById, createAuction, updateHighestBid } from '../controllers/auctionController.js'
 import * as AuthController from '../controllers/authController.js'
 import { placeBid, getBidsByAuctionId } from '../controllers/bidController.js'
 
@@ -21,5 +21,8 @@ router
 
 router
 	.get('/bid/:auctionId', getBidsByAuctionId)
+
+router
+	.put('/update/:auctionId', updateHighestBid)
 
 export default router

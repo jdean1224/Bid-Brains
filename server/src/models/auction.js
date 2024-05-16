@@ -21,6 +21,10 @@ const Auction = sequelize.define('Auction', {
         type: DataTypes.DECIMAL(7, 2),
         allowNull: false,
     },
+    highestBid: {
+        type: DataTypes.DECIMAL(7, 2),
+        allowNull: true,
+    },
     condition: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -44,6 +48,10 @@ const Auction = sequelize.define('Auction', {
     size: {
         type: DataTypes.STRING,
         allowNull: true,
+    },
+    bidStart: {
+        type: DataTypes.DATE,
+        allowNull: false,
     },
     bidLength: {
         type: DataTypes.INTEGER,

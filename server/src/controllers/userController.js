@@ -34,7 +34,7 @@ export const getUsers = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-
+ 
 // Route to fetch user by id
 export const getUserById = async (req, res) => {
     const { id } = req.params;

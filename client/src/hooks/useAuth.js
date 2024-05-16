@@ -39,7 +39,7 @@ export function useLogin() {
       toast.error(err.message)
     },
     onSuccess: (data) => {
-      console.log('Data received from login:', data);
+      // console.log('Data received from login:', data);
       userDispatch({type: 'HANDLE_PASS_USER_ID', payload: data.id})
 			queryClient.invalidateQueries({ queryKey: ['userData'] });
       toast.success('User successfully logged in!')

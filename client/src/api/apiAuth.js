@@ -24,7 +24,7 @@ export async function login({ email, password }) {
 export async function logout() {
 	try {
 		const response = await axios.post('http://localhost:3001/users/logout')
-		console.log(response.data)
+		// console.log(response.data)
 	} catch (error) {
 		console.error('Error logging user out:', error.response.data.error)
 	}

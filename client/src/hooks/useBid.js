@@ -1,5 +1,5 @@
 import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { placeBid as placeBidApi, getBidsByAuctionId as getBidsByAuctionIdApi} from '../api/apiBid'
+import { placeBid as placeBidApi, getBidsByAuctionId  as getBidsByAuctionIdApi, updateHighestBid as updateHighestBidApi} from '../api/apiBid'
 import toast from 'react-hot-toast'
 
 export function usePlaceBid(auctionId) {
@@ -10,7 +10,7 @@ export function usePlaceBid(auctionId) {
 			toast.error(error.message)
     },
 		onSuccess: () => {
-			toast.success('Bid was placed successfully!')
+			// toast.success('Bid was placed successfully!')
 			queryClient.invalidateQueries(['bids', auctionId])
 		}
 	})
@@ -24,6 +24,21 @@ export function useGetBidsByAuctionId(auctionId) {
   });
   return { data, isLoading, error };
 }
+
+export const useUpdateHighestBid = ({ auctionId, highestBid }) => {
+    const queryClient = useQueryClient();
+    const { mutate: updateHighestBid, isLoading } = useMutation({
+        mutationFn: updateHighestBidApi,
+        onError: (error) => {
+            toast.error(error.message);
+        },
+        onSuccess: () => {
+            toast.success('Bid was updated successfully!');
+            queryClient.invalidateQueries(['bids', auctionId]);
+        }
+    });
+    return { auctionId, updateHighestBid, isLoading };
+};
 
 // export function useGetBidsByAuctionId(auctionId) {
 //   const { data, isLoading, error } = useQuery({
@@ -42,3 +57,5 @@ export function useGetBidsByAuctionId(auctionId) {
 //   });
 //   return { data, isLoading, error };
 // }
+
+
